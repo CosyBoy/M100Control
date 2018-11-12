@@ -277,8 +277,9 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 break;
             }
             case R.id.btn_capture:{
-                captureAction();
                 client.start();
+                captureAction();
+                switchCameraMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD);
                 break;
             }
             default:

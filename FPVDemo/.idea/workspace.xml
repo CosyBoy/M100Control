@@ -248,8 +248,8 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/dji/FPVDemo/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="292" column="24" lean-forward="true" selection-start-line="292" selection-start-column="19" selection-end-line="292" selection-end-column="26" />
+            <state relative-caret-position="336">
+              <caret line="314" column="89" lean-forward="true" selection-start-line="314" selection-start-column="89" selection-end-line="314" selection-end-column="89" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3069#3354#0" expanded="true" />
@@ -263,18 +263,29 @@
                 <element signature="e#9570#9571#0" expanded="true" />
                 <element signature="e#9690#9950#0" expanded="true" />
                 <element signature="e#9949#9950#0" expanded="true" />
-                <element signature="e#10401#10775#0" expanded="true" />
-                <element signature="e#10774#10775#0" expanded="true" />
-                <element signature="e#11161#12286#0" expanded="true" />
-                <element signature="e#11391#12216#0" expanded="true" />
-                <element signature="e#11561#12150#0" expanded="true" />
-                <element signature="e#12149#12150#0" expanded="true" />
-                <element signature="e#12215#12216#0" expanded="true" />
-                <element signature="e#12285#12286#0" expanded="true" />
-                <element signature="e#12512#12901#0" expanded="true" />
-                <element signature="e#12900#12901#0" expanded="true" />
-                <element signature="e#13155#13546#0" expanded="true" />
-                <element signature="e#13545#13546#0" expanded="true" />
+                <element signature="e#10482#10856#0" expanded="true" />
+                <element signature="e#10855#10856#0" expanded="true" />
+                <element signature="e#11472#12297#0" expanded="true" />
+                <element signature="e#11642#12231#0" expanded="true" />
+                <element signature="e#12230#12231#0" expanded="true" />
+                <element signature="e#12296#12297#0" expanded="true" />
+                <element signature="e#12366#12367#0" expanded="true" />
+                <element signature="e#12593#12982#0" expanded="true" />
+                <element signature="e#12981#12982#0" expanded="true" />
+                <element signature="e#13236#13627#0" expanded="true" />
+                <element signature="e#13626#13627#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/dji/FPVDemo/Client.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="679">
+              <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -291,7 +302,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>@o</find>
       <find>VideoDataCallback</find>
       <find>lo'o</find>
       <find>o</find>
@@ -321,6 +331,7 @@
       <find>l</find>
       <find>loop</find>
       <find>onclick</find>
+      <find>SettingsDefinitions</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -2612,7 +2623,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1542029665421" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1542032138939" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2660,7 +2671,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1542029665422" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1542032138939" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2843,7 +2854,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1542029665424" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1542032138942" />
       </method>
     </configuration>
     <list size="3">
@@ -2896,7 +2907,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="1942" height="1056" extended-state="6" />
+    <frame x="-11" y="-11" width="1942" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -3283,16 +3294,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/dji/FPVDemo/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1620">
-          <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/dji/FPVDemo/MApplication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-713">
@@ -3311,10 +3312,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/dji/FPVDemo/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="679">
+          <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/dji/FPVDemo/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="292" column="24" lean-forward="true" selection-start-line="292" selection-start-column="19" selection-end-line="292" selection-end-column="26" />
+        <state relative-caret-position="336">
+          <caret line="314" column="89" lean-forward="true" selection-start-line="314" selection-start-column="89" selection-end-line="314" selection-end-column="89" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3069#3354#0" expanded="true" />
@@ -3328,18 +3339,17 @@
             <element signature="e#9570#9571#0" expanded="true" />
             <element signature="e#9690#9950#0" expanded="true" />
             <element signature="e#9949#9950#0" expanded="true" />
-            <element signature="e#10401#10775#0" expanded="true" />
-            <element signature="e#10774#10775#0" expanded="true" />
-            <element signature="e#11161#12286#0" expanded="true" />
-            <element signature="e#11391#12216#0" expanded="true" />
-            <element signature="e#11561#12150#0" expanded="true" />
-            <element signature="e#12149#12150#0" expanded="true" />
-            <element signature="e#12215#12216#0" expanded="true" />
-            <element signature="e#12285#12286#0" expanded="true" />
-            <element signature="e#12512#12901#0" expanded="true" />
-            <element signature="e#12900#12901#0" expanded="true" />
-            <element signature="e#13155#13546#0" expanded="true" />
-            <element signature="e#13545#13546#0" expanded="true" />
+            <element signature="e#10482#10856#0" expanded="true" />
+            <element signature="e#10855#10856#0" expanded="true" />
+            <element signature="e#11472#12297#0" expanded="true" />
+            <element signature="e#11642#12231#0" expanded="true" />
+            <element signature="e#12230#12231#0" expanded="true" />
+            <element signature="e#12296#12297#0" expanded="true" />
+            <element signature="e#12366#12367#0" expanded="true" />
+            <element signature="e#12593#12982#0" expanded="true" />
+            <element signature="e#12981#12982#0" expanded="true" />
+            <element signature="e#13236#13627#0" expanded="true" />
+            <element signature="e#13626#13627#0" expanded="true" />
           </folding>
         </state>
       </provider>
