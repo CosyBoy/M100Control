@@ -268,7 +268,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 break;
             }
             case R.id.btn_land:{
-                flightController.confirmLanding(new CommonCallbacks.CompletionCallback() {
+                flightController.startLanding(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
                         //DialogUtils.showDialogBasedOnError(getContext(), djiError);
@@ -277,6 +277,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 break;
             }
             case R.id.btn_capture:{
+                captureAction();
                 client.start();
                 break;
             }
@@ -309,7 +310,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         final Camera camera = FPVDemoApplication.getCameraInstance();
         if (camera != null) {
 
-            SettingsDefinitions.ShootPhotoMode photoMode = SettingsDefinitions.ShootPhotoMode.SINGLE; // Set the camera capture mode as Single mode
+            SettingsDefinitions.ShootPhotoMode photoMode = SettingsDefinitions.ShootPhotoMode.BURST; // Set the camera capture mode as Single mode
             camera.setShootPhotoMode(photoMode, new CommonCallbacks.CompletionCallback(){
                     @Override
                     public void onResult(DJIError djiError) {
