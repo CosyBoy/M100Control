@@ -1,8 +1,10 @@
 package com.dji.FPVDemo;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.TextureView;
@@ -15,6 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import dji.common.camera.SettingsDefinitions;   //This class contains all the enums and setting classes for the DJI Camera.
 import dji.common.camera.SystemState;             //This class provides general information and current status of the camera
 import dji.common.error.DJIError;               //Class that handles all errors that are not handled by individual components
@@ -23,12 +31,14 @@ import dji.common.useraccount.UserAccountState;   //Class used to manage the DJI
 import dji.common.util.CommonCallbacks;         //Interfaces of common callbacks used to return results of asynchronous operations.
 import dji.sdk.base.BaseProduct;                   //Abstract class for all DJI Products. Aircraft and HandHeld objects are subclasses of BaseProduct and can be accessed from getProduct in DJISDKManager. Additional components can be found in Aircraft and HandHeld that are unique to those products only.
 import dji.sdk.camera.Camera;                   //This class contains the media manager and playback manager, which manage the camera's media content. It provides methods to change camera settings and perform camera actions. This object is available from the Aircraft or HandHeld object, which is a subclass of BaseProduct.
+import dji.sdk.camera.MediaManager;
 import dji.sdk.camera.VideoFeeder;           //Class that manages live video feed from DJI products to the mobile device.
 import dji.sdk.codec.DJICodecManager;            //Class that handles encoding and decoding of media
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.useraccount.UserAccountManager;   //Class used to manage the DJI account.
 
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 
 public class MainActivity extends Activity implements SurfaceTextureListener,OnClickListener{
@@ -278,8 +288,13 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
             }
             case R.id.btn_capture:{
                 client.start();
-                captureAction();
-                switchCameraMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD);
+                //MainActivity.this.getBitmap(mVideoSurface);
+                getBitmap(mVideoSurface);
+
+                //captureAction();
+                //switchCameraMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD);
+
+
                 break;
             }
             default:
@@ -302,6 +317,10 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                     }
                 }
             });
+            }
+            if(camera.isMediaDownloadModeSupported()){
+                MediaManager mediaManager=camera.getMediaManager();
+
             }
     }
 
@@ -376,4 +395,33 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         }
 
     }
+
+    public void getBitmap(TextureView vv)
+    {
+        String mPath = Environment.getExternalStorageDirectory().toString()
+                + "/Pictures/" + "1.png";
+        Toast.makeText(getApplicationContext(), "Capturing Screenshot: " + mPath, Toast.LENGTH_SHORT).show();
+
+        Bitmap bm = vv.getBitmap();
+        if(bm == null)
+            Log.e(TAG,"bitmap is null");
+
+        OutputStream fout = null;
+        File imageFile = new File(mPath);
+
+        try {
+            fout = new FileOutputStream(imageFile);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, fout);
+            fout.flush();
+            fout.close();
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "FileNotFoundException");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e(TAG, "IOException");
+            e.printStackTrace();
+        }
+    }
+
+
 }

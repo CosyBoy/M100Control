@@ -57,6 +57,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_NETWORK_STATE
 
+
+
     };
     private List<String> missingPermission = new ArrayList<>();
     private AtomicBoolean isRegistrationInProgress = new AtomicBoolean(false);
