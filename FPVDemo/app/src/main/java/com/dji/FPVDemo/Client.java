@@ -3,6 +3,7 @@ package com.dji.FPVDemo;
 /**
  * Created by Lenovo on 2018/11/12.
  */
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,22 +12,24 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 
 public class Client extends Thread {
 
     private static final String TAG = Client.class.getSimpleName();
-
     private String mServerHost;// 服务器地址
     private int mServerPort;// 服务端口号
-    private String mSendMessage;// 要发送的消息
+    //private String mSendMessage;// 要发送的消息
+    //private  Bitmap bitmap;
 
-    public Client(String serverHost, int serverPort, String sendMessage) {
+    public Client(String serverHost, int serverPort) {
         // TODO Auto-generated constructor stub
         this.mServerHost = serverHost;
         this.mServerPort = serverPort;
-        this.mSendMessage = sendMessage;
+        //this.mSendMessage = sendMessage;
+        //this.bitmap=bitmap;
     }
 
     @Override
@@ -42,12 +45,20 @@ public class Client extends Thread {
 
             // 判断是否连接成功
             if (socket.isConnected()) {
+
                 // 发送消息
                 DataOutputStream dos = new DataOutputStream(
                         socket.getOutputStream());
-                Log.d(TAG, "连接成功,开始发送消息,发送内容：" + mSendMessage);
-                dos.writeUTF(mSendMessage);// 服务区/客户端双方的写/读方式要一直,否则会报错
-                dos.flush();// 刷新输出流，使Server马上收到该字符串
+                Log.d(TAG, "连接成功,开始发送消息,发送内容：" );
+
+
+//                ByteArrayOutputStream bout=new ByteArrayOutputStream();
+//                bitmap.compress(Bitmap.CompressFormat.PNG,80,bout);
+//                dos.write(bout.toByteArray());
+
+
+//                dos.writeUTF(mSendMessage);// 服务区/客户端双方的写/读方式要一直,否则会报错
+                dos.flush();
 
                 // 接收服务器消息
                 DataInputStream dis = new DataInputStream(
@@ -71,6 +82,8 @@ public class Client extends Thread {
                 Log.e(TAG, "通讯过程发生异常:" + e.toString());
             }
         }
+
+
 //        finally {
 //            try {
 //                socket.close();

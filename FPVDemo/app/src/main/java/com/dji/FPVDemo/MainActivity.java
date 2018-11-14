@@ -17,10 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import dji.common.camera.SettingsDefinitions;   //This class contains all the enums and setting classes for the DJI Camera.
@@ -56,6 +61,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     private TextView recordingTime;
 
     private Handler handler;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +207,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         recordingTime.setVisibility(View.INVISIBLE);
 
 
+
     }
 
     private void initPreviewer() {
@@ -266,7 +274,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     public void onClick(View v) {
         Aircraft aircraft=MApplication.getAircraftInstance();
         FlightController flightController=aircraft.getFlightController();
-        Client client=new Client("192.168.31.16", 8090, "要发送的内容");
+
+
         switch (v.getId()) {
             case R.id.btn_takeoff:{
                 flightController.startTakeoff(new CommonCallbacks.CompletionCallback() {
@@ -287,9 +296,11 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 break;
             }
             case R.id.btn_capture:{
+                getBitmap(mVideoSurface);
+                Client client=new Client("192.168.31.16", 8090);
                 client.start();
                 //MainActivity.this.getBitmap(mVideoSurface);
-                getBitmap(mVideoSurface);
+
 
                 //captureAction();
                 //switchCameraMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD);
@@ -406,6 +417,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         if(bm == null)
             Log.e(TAG,"bitmap is null");
 
+
         OutputStream fout = null;
         File imageFile = new File(mPath);
 
@@ -422,6 +434,9 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
             e.printStackTrace();
         }
     }
+
+
+
 
 
 }

@@ -51,4 +51,5 @@ dependencies {
 
     compile ('com.dji:dji-sdk:4.6')
     provided ('com.dji:dji-sdk-provided:4.6')
+    compile 'commons-net:commons-net:3.5'
 }
