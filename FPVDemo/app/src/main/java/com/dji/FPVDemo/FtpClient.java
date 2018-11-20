@@ -1,73 +1,100 @@
 package com.dji.FPVDemo;
 
-/**
- * Created by Lenovo on 2018/11/14.
- */
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-
-
-
+import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import dji.thirdparty.sanselan.util.IOUtils;
-
 
 public class FtpClient {
 
-    /**
-     * 传输文件到ftp服务器
-     * @param file
-     * @return
-     */
-    private boolean uploadFile(File file) {
-        FTPClient ftpClient = new FTPClient();
-        if(file == null || !file.exists()){
-            log.error("文件不存在! file="+file);
-            return false;
+//    private final String hostname = "ftp.dlptest.com"; //"192.168.1.119";
+//    private final String userName = "anonymous";
+//    private final String password = "";
+//    private String filePath;
+//    private FTPClient ftpClient = null;
+//
+//    private boolean login = false;
+//    boolean storeFile = false;
+//
+//    public FtpClient(String filePath) {
+//        this.filePath = filePath;
+//    }
+//
+    public void connect() {
+        FTPClient ftp = new FTPClient();
+        try {
+            ftp.connect("192.168.31.16",  8090);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        CountingInputStream cis = null;
-        try{
-            ftpClient.connect(host, port);
-            ftpClient.login(userName, password);
-            ftpClient.enterLocalPassiveMode();   // 进入被动模式
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE); // 需要指定文件传输类型，否则默认是ASCII类型，会导致二进制文件传输损坏
-            InputStream ins = new FileInputStream(file);
 
-            // 提示文件上传进度
-            final long fileSize = file.length();
-            cis = new CountingInputStream(ins){
-                private double progress = 0.0;
-                private double step     = 0.1;
-                @Override
-                protected void beforeRead(int n){
-                    try {
-                        super.beforeRead(n);
-                    } catch (IOException e) {
-                        logger.error("error reading file.", e);
-                    }
-                    double ratio = 1.0 * getCount() / fileSize;
-                    if(ratio >= progress){
-                        logger.info(String.format("uploading %s of %s (%.0f%% completed)", getCount(), fileSize, ratio * 100));
-                        progress += step;
-                    }
-                }
-            };
-            return ftpClient.storeFile(file.getName(), cis);
-        }catch (Exception e) {
-            logger.error(String.format("ftp文件传输异常, file=%s", file), e);
-            return false;
-        }finally{
-
-            IOUtils.closeQuietly(cis);
-            try { ftpClient.logout(); } catch (Exception e) {} // keep quiet
-            try { ftpClient.disconnect(); } catch (IOException e) {}// keep quiet
+        try {
+            ftp.login("user", "12345");
+            //ftp.login("anonymous", "");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        String mPath = Environment.getExternalStorageDirectory().toString()
+                + "/Pictures/" + "1.jpg";
+        File file = new File(mPath);
+
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //ftp.enterLocalPassiveMode();
+        try {
+            if (!ftp.storeFile("1.jpg", input)) {
+                System.out.println("upload failed!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            input.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int reply = ftp.getReplyCode();
+
+        if(!FTPReply.isPositiveCompletion(reply)) {
+            System.out.println("upload failed!");
+        }
+
+        try {
+            ftp.logout();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            ftp.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
+
+
+
 

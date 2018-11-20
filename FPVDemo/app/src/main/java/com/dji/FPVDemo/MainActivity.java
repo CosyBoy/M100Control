@@ -3,6 +3,7 @@ package com.dji.FPVDemo;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.widget.ToggleButton;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -276,6 +278,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         FlightController flightController=aircraft.getFlightController();
 
 
+
         switch (v.getId()) {
             case R.id.btn_takeoff:{
                 flightController.startTakeoff(new CommonCallbacks.CompletionCallback() {
@@ -295,17 +298,11 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 });
                 break;
             }
-            case R.id.btn_capture:{
-                getBitmap(mVideoSurface);
-                Client client=new Client("192.168.31.16", 8090);
-                client.start();
-                //MainActivity.this.getBitmap(mVideoSurface);
-
-
-                //captureAction();
-                //switchCameraMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD);
-
-
+            case R.id.btn_capture: {
+                for (int i=0;i<10;i++) {
+                    getBitmap(mVideoSurface);
+                    uploadFile();
+                }
                 break;
             }
             default:
@@ -410,7 +407,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     public void getBitmap(TextureView vv)
     {
         String mPath = Environment.getExternalStorageDirectory().toString()
-                + "/Pictures/" + "1.png";
+                + "/Pictures/" + "1.jpg";
         Toast.makeText(getApplicationContext(), "Capturing Screenshot: " + mPath, Toast.LENGTH_SHORT).show();
 
         Bitmap bm = vv.getBitmap();
@@ -423,7 +420,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
         try {
             fout = new FileOutputStream(imageFile);
-            bm.compress(Bitmap.CompressFormat.PNG, 90, fout);
+            bm.compress(Bitmap.CompressFormat.JPEG, 90, fout);
             fout.flush();
             fout.close();
         } catch (FileNotFoundException e) {
@@ -436,7 +433,15 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     }
 
 
+    private void uploadFile(){
+        new Thread(new Runnable() {
+            public void run() {
+                FtpClient ftp=new FtpClient();
+                ftp.connect();
 
+            }
+        }).start();
+    }
 
 
 }
