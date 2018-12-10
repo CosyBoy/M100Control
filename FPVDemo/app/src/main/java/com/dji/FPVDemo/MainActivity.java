@@ -29,10 +29,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dji.common.camera.SettingsDefinitions;   //This class contains all the enums and setting classes for the DJI Camera.
 import dji.common.camera.SystemState;             //This class provides general information and current status of the camera
 import dji.common.error.DJIError;               //Class that handles all errors that are not handled by individual components
+import dji.common.flightcontroller.FlightOrientationMode;
+import dji.common.flightcontroller.virtualstick.FlightControlData;
+import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
+import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
+import dji.common.flightcontroller.virtualstick.VerticalControlMode;
+import dji.common.flightcontroller.virtualstick.YawControlMode;
 import dji.common.product.Model;                 //Specifies all the supported products (Aircraft and Handheld)
 import dji.common.useraccount.UserAccountState;   //Class used to manage the DJI account.
 import dji.common.util.CommonCallbacks;         //Interfaces of common callbacks used to return results of asynchronous operations.
@@ -46,6 +55,7 @@ import dji.sdk.products.Aircraft;
 import dji.sdk.useraccount.UserAccountManager;   //Class used to manage the DJI account.
 
 import static android.os.Environment.DIRECTORY_PICTURES;
+import static dji.common.flightcontroller.FlightOrientationMode.*;
 
 
 public class MainActivity extends Activity implements SurfaceTextureListener,OnClickListener{
@@ -55,6 +65,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     // Codec for video live view
     protected DJICodecManager mCodecManager = null;
+
+    private ControlUav server;
 
     protected TextureView mVideoSurface = null;
 
@@ -279,12 +291,15 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
 
 
+
+
         switch (v.getId()) {
             case R.id.btn_takeoff:{
                 flightController.startTakeoff(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
                         //DialogUtils.showDialogBasedOnError(getContext(), djiError);
+
                     }
                 });
                 break;
@@ -299,10 +314,108 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 break;
             }
             case R.id.btn_capture: {
-                for (int i=0;i<10;i++) {
-                    getBitmap(mVideoSurface);
-                    uploadFile();
+//                getBitmap(mVideoSurface);              //1
+//                uploadFile();
+
+                //flightController.setFlightOrientationMode(AIRCRAFT_HEADING,null);
+                //flightController.setTripodModeEnabled(false,null);
+                //flightController.setTerrainFollowModeEnabled(false,null);
+                flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
+                flightController.setVerticalControlMode(VerticalControlMode.POSITION);
+                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+                flightController.setYawControlMode(YawControlMode.ANGLE);
+                flightController.setVirtualStickModeEnabled(true,null);
+                if(flightController.isVirtualStickControlModeAvailable()){
+                    Toast.makeText(getApplicationContext(), "切换到VirtualStick模式 " , Toast.LENGTH_SHORT).show();
                 }
+                //ControlUav mcontrolUav=new ControlUav(flightController);
+
+//                try {
+//                    new UdpServerThread(flightController).start();
+//                } catch (SocketException e) {
+//                    e.printStackTrace();
+//                }
+                server = new ControlUav(flightController);
+
+                //flightController.sendVirtualStickFlightControlData(new FlightControlData(0f, 0f, 60f, 2f),null);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FTPClient ftp = new FTPClient();
+                        try {
+                            ftp.connect("192.168.31.16",  8090);
+                            ftp.login("user", "12345");
+                            //ftp.login("anonymous", "");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                       // String mPath = Environment.getExternalStorageDirectory().toString()
+                        //    + "/Pictures/" + "1.jpg";
+                        FileInputStream input = null;
+                        File file;
+
+                         for (int i=1;i<10000;i++){
+                             String mPath = Environment.getExternalStorageDirectory().toString()
+                                     + "/Pictures/" + "1.jpg";
+                             Bitmap bm = mVideoSurface.getBitmap();
+//                             if(bm == null)
+//                                 Log.e(TAG,"bitmap is null");
+
+
+                             OutputStream fout = null;
+                             File imageFile = new File(mPath);
+
+                             try {
+                                 fout = new FileOutputStream(imageFile);
+                                 bm.compress(Bitmap.CompressFormat.JPEG, 90, fout);
+                                 fout.flush();
+                                 fout.close();
+                             } catch (FileNotFoundException e) {
+                                 Log.e(TAG, "FileNotFoundException");
+                                 e.printStackTrace();
+                             } catch (IOException e) {
+                                 Log.e(TAG, "IOException");
+                                 e.printStackTrace();
+                             }
+                            file = new File(mPath);
+                            try {
+                                input = new FileInputStream(file);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                ftp.setFileType(FTP.BINARY_FILE_TYPE);
+                                //ftp.enterLocalPassiveMode();
+                                if (!ftp.storeFile(i+".jpg", input)) {
+                                    System.out.println("upload failed!");
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            try {
+                                input.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            int reply = ftp.getReplyCode();
+                            if(!FTPReply.isPositiveCompletion(reply)) {
+                                System.out.println("upload failed!");
+                            }
+                        }
+
+                        try {
+                            ftp.logout();
+                            ftp.disconnect();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
+
                 break;
             }
             default:
@@ -404,44 +517,163 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     }
 
-    public void getBitmap(TextureView vv)
-    {
-        String mPath = Environment.getExternalStorageDirectory().toString()
-                + "/Pictures/" + "1.jpg";
-        Toast.makeText(getApplicationContext(), "Capturing Screenshot: " + mPath, Toast.LENGTH_SHORT).show();
-
-        Bitmap bm = vv.getBitmap();
-        if(bm == null)
-            Log.e(TAG,"bitmap is null");
-
-
-        OutputStream fout = null;
-        File imageFile = new File(mPath);
-
-        try {
-            fout = new FileOutputStream(imageFile);
-            bm.compress(Bitmap.CompressFormat.JPEG, 90, fout);
-            fout.flush();
-            fout.close();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "FileNotFoundException");
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-            e.printStackTrace();
-        }
-    }
-
-
-    private void uploadFile(){
-        new Thread(new Runnable() {
-            public void run() {
-                FtpClient ftp=new FtpClient();
-                ftp.connect();
-
-            }
-        }).start();
-    }
+//    public void getBitmap(TextureView vv)
+//    {
+//        String mPath = Environment.getExternalStorageDirectory().toString()
+//                + "/Pictures/" + "1.jpg";
+//        Toast.makeText(getApplicationContext(), "Capturing Screenshot: " + mPath, Toast.LENGTH_SHORT).show();
+//
+//        Bitmap bm = vv.getBitmap();
+//        if(bm == null)
+//            Log.e(TAG,"bitmap is null");
+//
+//
+//        OutputStream fout = null;
+//        File imageFile = new File(mPath);
+//
+//        try {
+//            fout = new FileOutputStream(imageFile);
+//            bm.compress(Bitmap.CompressFormat.JPEG, 90, fout);
+//            fout.flush();
+//            fout.close();
+//        } catch (FileNotFoundException e) {
+//            Log.e(TAG, "FileNotFoundException");
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            Log.e(TAG, "IOException");
+//            e.printStackTrace();
+//        }
+//    }
 
 
+//    private void uploadFile(){                         //单个照片传输可行，
+//        new Thread(new Runnable() {
+//            public void run() {
+//                FtpClient ftp=new FtpClient();
+//                ftp.connect();
+//
+//            }
+//        }).start();
+//    }
+
+
+//     private void uploadFile(){                                  //1
+//        new Thread(new Runnable() {
+//            public void run() {
+//                FTPClient ftp = new FTPClient();
+//                try {
+//                    ftp.connect("192.168.31.16",  8090);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//                try {
+//                    ftp.login("user", "12345");
+//                    //ftp.login("anonymous", "");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                String mPath = Environment.getExternalStorageDirectory().toString()
+//                        + "/Pictures/" + "1.jpg";
+//                File file = new File(mPath);
+//
+//                FileInputStream input = null;
+//                try {
+//                    input = new FileInputStream(file);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    ftp.setFileType(FTP.BINARY_FILE_TYPE);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                //ftp.enterLocalPassiveMode();
+//                try {
+//                    if (!ftp.storeFile("1.jpg", input)) {
+//                        System.out.println("upload failed!");
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    input.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                int reply = ftp.getReplyCode();
+//
+//                if(!FTPReply.isPositiveCompletion(reply)) {
+//                    System.out.println("upload failed!");
+//                }
+//
+//                try {
+//                    ftp.logout();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    ftp.disconnect();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//    }
+
+//    private void uploadFile(){                      //2
+//        new Thread(new Runnable() {
+//            public void run() {
+//                    FTPClient ftp = new FTPClient();
+//                    try {
+//                        ftp.connect("192.168.31.16",  8090);
+//                        ftp.login("user", "12345");
+//                        //ftp.login("anonymous", "");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    String mPath = Environment.getExternalStorageDirectory().toString()
+//                        + "/Pictures/" + "1.jpg";
+//                    FileInputStream input = null;
+//                    File file;
+//                for (int i=1;i<11;i++){
+//                        getBitmap(mVideoSurface);
+//                        file = new File(mPath);
+//                        try {
+//                            input = new FileInputStream(file);
+//                        } catch (FileNotFoundException e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+//                            //ftp.enterLocalPassiveMode();
+//                            if (!ftp.storeFile(i+".jpg", input)) {
+//                                System.out.println("upload failed!");
+//                            }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        try {
+//                            input.close();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        int reply = ftp.getReplyCode();
+//                        if(!FTPReply.isPositiveCompletion(reply)) {
+//                            System.out.println("upload failed!");
+//                        }
+//                    }
+//
+//                    try {
+//                        ftp.logout();
+//                        ftp.disconnect();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+//    }
 }

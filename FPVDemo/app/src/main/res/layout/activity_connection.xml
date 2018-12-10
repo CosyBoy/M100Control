@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     android:orientation="vertical">
 
     <TextView
@@ -59,10 +60,19 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="56dp"
-        android:text="DJIFPVDemo"
+        android:text="无人机的协同跟踪系统 "
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorBlack"
         android:textSize="20dp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/ip_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="18dp"
+        android:layout_toEndOf="@+id/textView"
+        android:text="TextView" />
 
 </RelativeLayout>

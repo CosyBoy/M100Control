@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="__local_jars__:D.\uavxm\Android-FPVDemo-master\FPVDemo\dJISDKLIB\libs\dji_eventbus.jar:unspecified@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dJISDKLIB/libs/dji_eventbus.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -23,7 +23,7 @@ public class FPVDemoApplication extends Application{
 
     public static final String FLAG_CONNECTION_CHANGE = "fpv_tutorial_connection_change";
 
-    private DJISDKManager.SDKManagerCallback mDJISDKManagerCallback;
+    private DJISDKManager .SDKManagerCallback mDJISDKManagerCallback;
     private static BaseProduct mProduct;
     public Handler mHandler;
 
