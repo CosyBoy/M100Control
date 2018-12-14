@@ -125,6 +125,9 @@ public class ControlUav {
     //construtor
     public ControlUav(FlightController f){
         this.mFlightController = f;
+//        mFlightController.setVerticalControlMode(VerticalControlMode.POSITION);
+//        mFlightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+//        mFlightController.setYawControlMode(YawControlMode.ANGLE);
         Thread ServerThread = new Thread(new ServerThread());
         ServerThread.start();
     }

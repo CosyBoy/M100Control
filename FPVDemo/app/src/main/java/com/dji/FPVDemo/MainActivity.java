@@ -1,6 +1,7 @@
 package com.dji.FPVDemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.os.AsyncTask;
@@ -76,6 +77,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     private Handler handler;
 
+    private String toConnect;
 
 
     @Override
@@ -83,6 +85,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent=getIntent();
+        toConnect=intent.getStringExtra("iptoconnect");
 
         handler = new Handler();
 
@@ -317,14 +321,18 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 //                getBitmap(mVideoSurface);              //1
 //                uploadFile();
 
-                //flightController.setFlightOrientationMode(AIRCRAFT_HEADING,null);
+
                 //flightController.setTripodModeEnabled(false,null);
                 //flightController.setTerrainFollowModeEnabled(false,null);
+
+
+
+                flightController.setVirtualStickModeEnabled(true,null);
+                flightController.setFlightOrientationMode(AIRCRAFT_HEADING,null);
                 flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
                 flightController.setVerticalControlMode(VerticalControlMode.POSITION);
                 flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
                 flightController.setYawControlMode(YawControlMode.ANGLE);
-                flightController.setVirtualStickModeEnabled(true,null);
                 if(flightController.isVirtualStickControlModeAvailable()){
                     Toast.makeText(getApplicationContext(), "切换到VirtualStick模式 " , Toast.LENGTH_SHORT).show();
                 }
@@ -344,7 +352,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                     public void run() {
                         FTPClient ftp = new FTPClient();
                         try {
-                            ftp.connect("192.168.31.16",  8090);
+                            ftp.connect(toConnect,  8090);
                             ftp.login("user", "12345");
                             //ftp.login("anonymous", "");
                         } catch (IOException e) {

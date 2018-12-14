@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="__local_jars__:D.\uavxm\Android-FPVDemo-master\FPVDemo\dJISDKLIB\libs\rxandroid-1.1.0.jar:unspecified@jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/dJISDKLIB/libs/rxandroid-1.1.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

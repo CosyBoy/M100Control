@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     private TextView mVersionTv;
     private TextView mTextIpInfo;
     private Button mBtnOpen;
+    private EditText mEditText;
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
             Manifest.permission.VIBRATE,
             Manifest.permission.INTERNET,
@@ -213,11 +215,13 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         mTextConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
         mTextProduct = (TextView) findViewById(R.id.text_product_info);
         mTextIpInfo=(TextView) findViewById(R.id.ip_info);
+        mEditText=(EditText)findViewById(R.id.editText);
         String text=GetIpInfo.getWIFILocalIpAdress(this);
         mTextIpInfo.setText(text);
         mBtnOpen = (Button) findViewById(R.id.btn_open);
         mBtnOpen.setOnClickListener(this);
         mBtnOpen.setEnabled(false);
+
         mVersionTv = (TextView) findViewById(R.id.textView2);
         mVersionTv.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
     }
@@ -263,6 +267,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
             case R.id.btn_open: {
                 Intent intent = new Intent(this, MainActivity.class);
+                String ip=mEditText.getText().toString();
+                intent.putExtra("iptoconnect",ip);
                 startActivity(intent);
                 break;
             }
