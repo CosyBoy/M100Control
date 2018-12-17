@@ -25,6 +25,7 @@ public class FPVDemoApplication extends Application{
 
     private DJISDKManager .SDKManagerCallback mDJISDKManagerCallback;
     private static BaseProduct mProduct;
+
     public Handler mHandler;
 
     private Application instance;
@@ -52,6 +53,8 @@ public class FPVDemoApplication extends Application{
         }
         return mProduct;
     }
+
+
 
     public static synchronized Camera getCameraInstance() {
 

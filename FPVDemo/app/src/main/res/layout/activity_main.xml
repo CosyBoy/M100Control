@@ -38,12 +38,21 @@
         android:textSize="12sp"/>
 
          <Button
-             android:id="@+id/btn_capture"
+             android:id="@+id/btn_control"
              android:layout_width="0dp"
              android:layout_weight="1"
              android:layout_height="wrap_content"
              android:layout_gravity="center_vertical"
-             android:text="获取"
+             android:text="获取命令"
+             android:textSize="12sp"/>
+
+         <Button
+             android:id="@+id/btn_send"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_vertical"
+             android:text="传输图片"
              android:textSize="12sp"/>
 
      </LinearLayout>
@@ -59,5 +68,8 @@
         android:textColor="#ffffff"
         android:layout_alignTop="@+id/video_previewer_surface"
         android:layout_centerHorizontal="true" />
+
+
+
 
 </RelativeLayout>

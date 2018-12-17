@@ -1,5 +1,6 @@
 package com.dji.FPVDemo;
 
+import android.os.Process;
 import android.util.Log;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.TimerTask;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.virtualstick.*;
 import dji.common.util.CommonCallbacks;
+import dji.sdk.flightcontroller.Compass;
 import dji.sdk.flightcontroller.FlightController;
 
 
@@ -120,11 +122,14 @@ public class ControlUav {
     private float mRoll;
     private float mYaw;
     private float mThrottle;
+    private float uavHeading;
+    private Compass mCompass;
 
 
     //construtor
     public ControlUav(FlightController f){
         this.mFlightController = f;
+        mCompass=mFlightController.getCompass();
 //        mFlightController.setVerticalControlMode(VerticalControlMode.POSITION);
 //        mFlightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
 //        mFlightController.setYawControlMode(YawControlMode.ANGLE);
@@ -195,6 +200,7 @@ public class ControlUav {
 
             try{
 
+                //Process.setThreadPriority(MAX_PRIORITY);
                 serverSocketUDP = new DatagramSocket(socketServerPORT);
 
                 //buffer
@@ -221,6 +227,9 @@ public class ControlUav {
                     mRoll=Float.parseFloat(array[1]);
                     mYaw=Float.parseFloat(array[2]);
                     mThrottle=Float.parseFloat(array[3]);
+
+                    uavHeading=mCompass.getHeading();
+                    mYaw=uavHeading+mYaw;
 //                    switch (receiveString){
 //
 //                        case "takeoff":
@@ -251,7 +260,7 @@ public class ControlUav {
                     if (null == mSendVirtualStickDataTimer) {
                         mSendVirtualStickDataTask = new SendVirtualStickDataTask();
                         mSendVirtualStickDataTimer = new Timer();
-                        mSendVirtualStickDataTimer.schedule(mSendVirtualStickDataTask, 0, 200);
+                        mSendVirtualStickDataTimer.schedule(mSendVirtualStickDataTask, 0,200);
                     }
 
                 }

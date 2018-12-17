@@ -51,6 +51,7 @@ import dji.sdk.camera.Camera;                   //This class contains the media 
 import dji.sdk.camera.MediaManager;
 import dji.sdk.camera.VideoFeeder;           //Class that manages live video feed from DJI products to the mobile device.
 import dji.sdk.codec.DJICodecManager;            //Class that handles encoding and decoding of media
+import dji.sdk.flightcontroller.Compass;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.useraccount.UserAccountManager;   //Class used to manage the DJI account.
@@ -71,13 +72,19 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     protected TextureView mVideoSurface = null;
 
-    private  Button takeoffBtn,landBtn,captureBtn;
+    private  Button takeoffBtn,landBtn,sendBtn,controlBtn;
 
     private TextView recordingTime;
+
 
     private Handler handler;
 
     private String toConnect;
+
+    private FlightController flightController;
+
+
+
 
 
     @Override
@@ -169,11 +176,15 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     }
 
     @Override
-    public void onResume() {        initPreviewer();
+    public void onResume() {
+        //initPreviewer();
 
         Log.e(TAG, "onResume");
         super.onResume();
+        initPreviewer();
         onProductChange();
+        initFlightController();
+
 
         if(mVideoSurface == null) {
             Log.e(TAG, "mVideoSurface is null");
@@ -202,6 +213,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     protected void onDestroy() {
         Log.e(TAG, "onDestroy");
         uninitPreviewer();
+
         super.onDestroy();
     }
 
@@ -210,9 +222,14 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         mVideoSurface = (TextureView)findViewById(R.id.video_previewer_surface);
 
         recordingTime = (TextView) findViewById(R.id.timer);
+
+
+
+
         takeoffBtn = (Button) findViewById(R.id.btn_takeoff);
         landBtn = (Button) findViewById(R.id.btn_land);
-        captureBtn=(Button) findViewById(R.id.btn_capture);
+        sendBtn=(Button) findViewById(R.id.btn_send);
+        controlBtn=(Button)findViewById(R.id.btn_control);
 
         if (null != mVideoSurface) {
             mVideoSurface.setSurfaceTextureListener(this);
@@ -220,7 +237,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
         takeoffBtn.setOnClickListener(this);
         landBtn.setOnClickListener(this);
-        captureBtn.setOnClickListener(this);
+        sendBtn.setOnClickListener(this);
+        controlBtn.setOnClickListener(this);
 
         recordingTime.setVisibility(View.INVISIBLE);
 
@@ -290,10 +308,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     @Override
     public void onClick(View v) {
-        Aircraft aircraft=MApplication.getAircraftInstance();
-        FlightController flightController=aircraft.getFlightController();
-
-
+//        Aircraft aircraft=MApplication.getAircraftInstance();
+//        FlightController flightController=aircraft.getFlightController();
 
 
 
@@ -317,33 +333,24 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 });
                 break;
             }
-            case R.id.btn_capture: {
-//                getBitmap(mVideoSurface);              //1
-//                uploadFile();
+            case R.id.btn_send: {
 
-
-                //flightController.setTripodModeEnabled(false,null);
-                //flightController.setTerrainFollowModeEnabled(false,null);
-
-
-
-                flightController.setVirtualStickModeEnabled(true,null);
-                flightController.setFlightOrientationMode(AIRCRAFT_HEADING,null);
-                flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
-                flightController.setVerticalControlMode(VerticalControlMode.POSITION);
-                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-                flightController.setYawControlMode(YawControlMode.ANGLE);
-                if(flightController.isVirtualStickControlModeAvailable()){
-                    Toast.makeText(getApplicationContext(), "切换到VirtualStick模式 " , Toast.LENGTH_SHORT).show();
-                }
-                //ControlUav mcontrolUav=new ControlUav(flightController);
-
-//                try {
-//                    new UdpServerThread(flightController).start();
-//                } catch (SocketException e) {
-//                    e.printStackTrace();
+//                flightController.setFlightOrientationMode(AIRCRAFT_HEADING,null);
+//                flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
+//                //flightController.setFlightOrientationMode(FlightOrientationMode.AIRCRAFT_HEADING,null);
+//
+//                flightController.setVerticalControlMode(VerticalControlMode.POSITION);
+//                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+//                flightController.setYawControlMode(YawControlMode.ANGLE);
+//               // flightController.setVirtualStickModeEnabled(true,null);
+//
+//
+//                if(flightController.isVirtualStickControlModeAvailable()){
+//                    Toast.makeText(getApplicationContext(), "切换到VirtualStick模式 " , Toast.LENGTH_SHORT).show();
 //                }
-                server = new ControlUav(flightController);
+
+
+
 
                 //flightController.sendVirtualStickFlightControlData(new FlightControlData(0f, 0f, 60f, 2f),null);
 
@@ -424,6 +431,11 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                     }
                 }).start();
 
+                break;
+            }
+
+            case R.id.btn_control:{
+                server = new ControlUav(flightController);
                 break;
             }
             default:
@@ -684,4 +696,57 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 //                }
 //            }).start();
 //    }
+
+    private void initFlightController() {
+
+        Aircraft aircraft = MApplication.getAircraftInstance();
+        if (aircraft == null || !aircraft.isConnected()) {
+            showToast("Disconnected");
+            flightController = null;
+            return;
+        } else {
+            flightController = aircraft.getFlightController();
+
+            flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+            flightController.setYawControlMode(YawControlMode.ANGLE);
+            flightController.setVerticalControlMode(VerticalControlMode.POSITION);
+            flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
+
+            flightController.setFlightOrientationMode(FlightOrientationMode.AIRCRAFT_HEADING, new CommonCallbacks.CompletionCallback() {
+                @Override
+                public void onResult(DJIError djiError) {
+                    showToast("Set FlightOrientation Mode to AIRCRAFT_HEADING");
+                }
+            });
+            flightController.setTripodModeEnabled(false, new CommonCallbacks.CompletionCallback() {
+                @Override
+                public void onResult(DJIError djiError) {
+                    showToast("Set TripodMode False");
+                }
+            });
+            flightController.setTerrainFollowModeEnabled(false, new CommonCallbacks.CompletionCallback() {
+                @Override
+                public void onResult(DJIError djiError) {
+                    showToast("set TerrainFollow Mode false");
+                }
+            });
+            flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
+                @Override
+                public void onResult(DJIError djiError) {
+                    if (djiError != null){
+                        showToast(djiError.getDescription());
+                    }else
+                    {
+                        showToast("Enable Virtual Stick Success");
+                    }
+                }
+            });
+
+        }
+
+
+
+
+
+    }
 }
