@@ -229,7 +229,12 @@ public class ControlUav {
                     mThrottle=Float.parseFloat(array[3]);
 
                     uavHeading=mCompass.getHeading();
-                    mYaw=uavHeading+mYaw;
+                    if(uavHeading+mYaw>180f)
+                        mYaw=-180f+(uavHeading+mYaw-180f);
+                    else if (uavHeading+mYaw<-180f)
+                        mYaw=180f+(uavHeading+mYaw+180f);
+                    else
+                        mYaw=uavHeading+mYaw;
 //                    switch (receiveString){
 //
 //                        case "takeoff":

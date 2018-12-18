@@ -706,7 +706,6 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
             return;
         } else {
             flightController = aircraft.getFlightController();
-
             flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
             flightController.setYawControlMode(YawControlMode.ANGLE);
             flightController.setVerticalControlMode(VerticalControlMode.POSITION);
