@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.secneo.sdk.Helper;
 
+
 import dji.sdk.base.BaseProduct;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
@@ -14,6 +15,9 @@ public class MApplication extends Application {
 
     private static BaseProduct product;
     private FPVDemoApplication fpvDemoApplication;
+
+
+
     @Override
     protected void attachBaseContext(Context paramContext) {
         super.attachBaseContext(paramContext);
@@ -47,5 +51,6 @@ public class MApplication extends Application {
         }
         return (Aircraft) getProductInstance();
     }
+
 
 }

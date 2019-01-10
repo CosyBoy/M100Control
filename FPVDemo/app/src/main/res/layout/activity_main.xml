@@ -55,12 +55,21 @@
              android:text="传输图片"
              android:textSize="12sp"/>
 
+
+         <Button
+             android:id="@+id/btn_switch"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_vertical"
+             android:text="紧急停止"
+             android:textSize="12sp"/>
+
      </LinearLayout>
 
     <TextView
         android:id="@+id/timer"
         android:layout_width="150dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="23dp"
@@ -68,6 +77,181 @@
         android:textColor="#ffffff"
         android:layout_alignTop="@+id/video_previewer_surface"
         android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout"
+
+        android:background="#00000000"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/text_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_voltage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_getcharge_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_altitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_isflying"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_connect_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_velocity_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_velocity_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_velocity_z"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/text_gimbal_roll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="@color/colorWhite"
+            android:textSize="8sp" />
+    </LinearLayout>
+
 
 
 

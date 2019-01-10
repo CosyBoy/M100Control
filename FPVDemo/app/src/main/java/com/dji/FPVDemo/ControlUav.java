@@ -1,5 +1,6 @@
 package com.dji.FPVDemo;
 
+import android.app.ActivityManager;
 import android.os.Process;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import dji.common.error.DJIError;
+import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.virtualstick.*;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.Compass;
@@ -118,6 +120,7 @@ public class ControlUav {
     DatagramSocket serverSocketUDP;
 
     private FlightController mFlightController;
+    private FlightControllerState mFlightControllerState;
     private float mPitch;
     private float mRoll;
     private float mYaw;
@@ -125,14 +128,13 @@ public class ControlUav {
     private float uavHeading;
     private Compass mCompass;
 
+    private  volatile boolean run=true;
 
     //construtor
     public ControlUav(FlightController f){
         this.mFlightController = f;
+        mFlightControllerState=mFlightController.getState();
         mCompass=mFlightController.getCompass();
-//        mFlightController.setVerticalControlMode(VerticalControlMode.POSITION);
-//        mFlightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-//        mFlightController.setYawControlMode(YawControlMode.ANGLE);
         Thread ServerThread = new Thread(new ServerThread());
         ServerThread.start();
     }
@@ -208,25 +210,50 @@ public class ControlUav {
 
                 while(true){
 
+                    if(run==false){               //方案一
+                        if (mSendVirtualStickDataTimer!=null) {
+                            mSendVirtualStickDataTimer.cancel();
+                            mSendVirtualStickDataTask.cancel();
+                            mSendVirtualStickDataTimer=null;
+                            mSendVirtualStickDataTask=null;
+                        }
+                        break;
+                    }
+
+//                    if(Thread.interrupted()){               //方案二
+//                        if (mSendVirtualStickDataTimer!=null) {
+//                            mSendVirtualStickDataTimer.cancel();
+//                            mSendVirtualStickDataTask.cancel();
+//                        }
+//                        break;
+//                    }
                     Log.d(TAG, "wait pc send");
 
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
                     serverSocketUDP.receive(packet);
 
-                    String receiveString = new String(packet.getData(), 0, packet.getLength());
+
+
+                    String receiveString = new String(packet.getData(), 0, packet.getLength(),"UTF-8");
+
 
                     IPAddress = packet.getAddress();
                     port = packet.getPort();
                     sendMessageUDP(receiveString);
 
 
-                    receiveString=new String(packet.getData());
                     String[] array=receiveString.split(",");
                     mPitch=Float.parseFloat(array[0]);
                     mRoll=Float.parseFloat(array[1]);
                     mYaw=Float.parseFloat(array[2]);
                     mThrottle=Float.parseFloat(array[3]);
+
+
+
+                    if(mPitch==0f&&mRoll==0f&&mYaw==0f&&mThrottle==0f){
+                        mThrottle=mFlightControllerState.getAircraftLocation().getAltitude();
+                    }
 
                     uavHeading=mCompass.getHeading();
                     if(uavHeading+mYaw>180f)
@@ -235,6 +262,8 @@ public class ControlUav {
                         mYaw=180f+(uavHeading+mYaw+180f);
                     else
                         mYaw=uavHeading+mYaw;
+
+
 //                    switch (receiveString){
 //
 //                        case "takeoff":
@@ -268,6 +297,7 @@ public class ControlUav {
                         mSendVirtualStickDataTimer.schedule(mSendVirtualStickDataTask, 0,200);
                     }
 
+
                 }
 
             }catch(IOException e){
@@ -283,6 +313,7 @@ public class ControlUav {
         @Override
         public void run() {
 
+
             if (mFlightController != null) {
                 mFlightController.sendVirtualStickFlightControlData(
                         new FlightControlData(
@@ -290,11 +321,21 @@ public class ControlUav {
                         ), new CommonCallbacks.CompletionCallback() {
                             @Override
                             public void onResult(DJIError djiError) {
-                                Log.d(TAG, "Dados enviados!");
+                                Log.d("cbc", djiError==null?"mPitch"+mPitch+"mRoll"+mRoll+"mYaw"+mYaw+"mThtottle"+mThrottle:djiError.getDescription());
                             }
                         }
                 );
             }
         }
     }
+
+    public void changebool(){             //方案一：使用volatile终止
+        if (run==true)
+            run=false;
+
+    }
+
+//    public void interrupt(){             //方案二:使用interrupt
+//        ServerThread.interrupt();
+//    }
 }
